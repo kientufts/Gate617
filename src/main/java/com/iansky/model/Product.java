@@ -1,7 +1,16 @@
 package com.iansky.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Product {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private String pId;
 	private String pName;
 	private String pCategory;
 	private String pDescription;
@@ -10,6 +19,14 @@ public class Product {
 	private String pStatus;
 	private int pUnitInStock;
 	private String pManufacturer;
+
+	public String getpId() {
+		return pId;
+	}
+
+	public void setpId(String pId) {
+		this.pId = pId;
+	}
 
 	public String getpName() {
 		return pName;

@@ -2,16 +2,20 @@ package com.iansky.controller;
 
 import com.iansky.dao.ProductDao;
 import com.iansky.model.Product;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
 public class HomeController {
 
-	private ProductDao productDao = new ProductDao();
+	@Autowired
+	private ProductDao productDao;
 
 	@RequestMapping("/")
 	public String home(){
@@ -20,14 +24,16 @@ public class HomeController {
 
 	@RequestMapping("/productList")
 	public String getProducts(Model model){
-		List<Product> productList = productDao.getProductList();
+		List<Product> productList = productDao.getAllProducts();
 		model.addAttribute("products", productList);
 
 		return "product-list";
 	}
 
-	@RequestMapping("/productList/viewProduct")
-	public String viewProduct(){
+	@RequestMapping("/productList/viewProduct/{pId}")
+	public String viewProduct(@PathVariable String pId, Model model) {
+		Product product = productDao.getProductById(pId);
+		model.addAttribute(product);
 		return "view-product";
 	}
 }

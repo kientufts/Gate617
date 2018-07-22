@@ -30,11 +30,18 @@
                 </div>
                 <div class="col-md-5">
 
-                    <h3>Product Name</h3>
-                    <p>Product Description</p>
-                    <p>Manufacturer</p>
-                    <p>Category</p>
-                    <p>Price</p>
+                    <h3>${product.pName}</h3>
+                    <p>${product.pDescription}</p>
+                    <p>
+                        <strong>Manufacturer</strong> : ${product.pManufacturer}
+                    </p>
+                    <p>
+                        <strong>Category</strong> : ${product.pCategory}
+                    </p>
+                    <p>
+                        <strong>Condition</strong> : ${product.pCondition}
+                    </p>
+                    <p>${product.pPrice} USD</p>
                 </div>
             </div>
 
