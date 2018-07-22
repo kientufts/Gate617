@@ -25,4 +25,9 @@ public class HomeController {
 
 		return "product-list";
 	}
+
+	@RequestMapping("/productList/viewProduct")
+	public String viewProduct(){
+		return "view-product";
+	}
 }
