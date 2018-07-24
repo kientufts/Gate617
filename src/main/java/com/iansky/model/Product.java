@@ -1,9 +1,8 @@
 package com.iansky.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.persistence.*;
 
 @Entity
 public class Product {
@@ -19,6 +18,9 @@ public class Product {
 	private String pStatus;
 	private int pUnitInStock;
 	private String pManufacturer;
+
+	@Transient
+	private MultipartFile pImage;
 
 	public String getpId() {
 		return pId;
@@ -90,5 +92,13 @@ public class Product {
 
 	public void setpManufacturer(String pManufacturer) {
 		this.pManufacturer = pManufacturer;
+	}
+
+	public MultipartFile getpImage() {
+		return pImage;
+	}
+
+	public void setpImage(MultipartFile pImage) {
+		this.pImage = pImage;
 	}
 }

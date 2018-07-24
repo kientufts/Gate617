@@ -9,7 +9,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Controller
@@ -17,6 +24,8 @@ public class HomeController {
 
 	@Autowired
 	private ProductDao productDao;
+
+	private Path path;
 
 	@RequestMapping("/")
 	public String home(){
@@ -63,8 +72,37 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/admin/productInventory/addProduct", method = RequestMethod.POST)
-	public String addProductPost(@ModelAttribute("product") Product product){
+	public String addProductPost(@ModelAttribute("product") Product product, HttpServletRequest request){
 		productDao.addProduct(product);
+		MultipartFile pImage = product.getpImage();
+		String rootDirectory = request.getSession().getServletContext().getRealPath("/");
+		path = Paths.get(rootDirectory + "/WEB-INF/resources/images/" + product.getpId() + ".png");
+
+		if(pImage != null && !pImage.isEmpty()){
+			try {
+				pImage.transferTo(new File(path.toString()));
+			} catch (Exception ex){
+				throw new RuntimeException("Product image saving failed");
+			}
+		}
+
+		return "redirect:/admin/productInventory";
+	}
+
+	@RequestMapping("/admin/productInventory/{pId}")
+	public String deleteProduct(@PathVariable String pId, HttpServletRequest request) {
+		String rootDirectory = request.getSession().getServletContext().getRealPath("/");
+		path = Paths.get(rootDirectory + "/WEB-INF/resources/images/" + pId + ".png");
+
+		if(Files.exists(path)){
+			try {
+				Files.delete(path);
+			} catch (IOException ex){
+				ex.printStackTrace();
+			}
+		}
+
+		productDao.deleteProduct(pId);
 
 		return "redirect:/admin/productInventory";
 	}
