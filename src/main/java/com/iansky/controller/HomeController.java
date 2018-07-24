@@ -89,7 +89,7 @@ public class HomeController {
 		return "redirect:/admin/productInventory";
 	}
 
-	@RequestMapping("/admin/productInventory/{pId}")
+	@RequestMapping("/admin/productInventory/deleteProduct/{pId}")
 	public String deleteProduct(@PathVariable String pId, HttpServletRequest request) {
 		String rootDirectory = request.getSession().getServletContext().getRealPath("/");
 		path = Paths.get(rootDirectory + "/WEB-INF/resources/images/" + pId + ".png");
@@ -104,6 +104,30 @@ public class HomeController {
 
 		productDao.deleteProduct(pId);
 
+		return "redirect:/admin/productInventory";
+	}
+
+	@RequestMapping("/admin/productInventory/editProduct/{pId}")
+	public String editProduct(@PathVariable String pId, Model model){
+		Product product = productDao.getProductById(pId);
+		model.addAttribute(product);
+		return "edit-product";
+	}
+
+	@RequestMapping(value = "/admin/productInventory/editProduct", method = RequestMethod.POST)
+	public String editProduc(@ModelAttribute("product") Product product, HttpServletRequest request){
+		MultipartFile pImage = product.getpImage();
+		String rootDirectory = request.getSession().getServletContext().getRealPath("/");
+		path = Paths.get(rootDirectory + "/WEB-INF/resources/images/" + product.getpId() + ".png");
+		if(pImage != null && !pImage.isEmpty()){
+			try {
+				pImage.transferTo(new File(path.toString()));
+			} catch (Exception ex)
+			{
+				throw new RuntimeException("Product image saving fail", ex);
+			}
+		}
+		productDao.editProduct(product);
 		return "redirect:/admin/productInventory";
 	}
 }
