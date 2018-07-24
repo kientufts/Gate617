@@ -8,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -35,5 +34,29 @@ public class HomeController {
 		Product product = productDao.getProductById(pId);
 		model.addAttribute(product);
 		return "view-product";
+	}
+
+	@RequestMapping("/admin")
+	public String adminPage(){
+		return "admin";
+	}
+
+	@RequestMapping("/admin/productInventory")
+	public String productInventory(Model model){
+		List<Product> products = productDao.getAllProducts();
+		model.addAttribute("products", products);
+
+		return  "product-inventory";
+	}
+
+	@RequestMapping("admin/productInventory/addProduct")
+	public String addProduct(Model model){
+		Product product = new Product();
+		product.setpCategory("Jean");
+		product.setpCondition("new");
+		product.setpStatus("active");
+
+		model.addAttribute("product", product);
+		return "add-product";
 	}
 }
