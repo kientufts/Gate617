@@ -1,10 +1,12 @@
 package com.iansky.dao;
 
 import com.iansky.model.Cart;
+import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Repository
 public class CartDaoImpl implements CartDao {
 
 	private Map<String, Cart> listOfCarts;
