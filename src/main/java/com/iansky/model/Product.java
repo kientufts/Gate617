@@ -1,8 +1,10 @@
 package com.iansky.model;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 
 @Entity
 public class Product {
@@ -10,12 +12,18 @@ public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private String pId;
+
+	@NotEmpty(message = "Product Name must not be null")
 	private String pName;
 	private String pCategory;
 	private String pDescription;
+
+	@Min(value = 0, message = "Product price must not be less than 0")
 	private double pPrice;
 	private String pCondition;
 	private String pStatus;
+
+	@Min(value = 0, message = "Unit in Stock must not be less than 0")
 	private int pUnitInStock;
 	private String pManufacturer;
 

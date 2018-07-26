@@ -5,6 +5,7 @@ import com.iansky.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -72,7 +74,11 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/admin/productInventory/addProduct", method = RequestMethod.POST)
-	public String addProductPost(@ModelAttribute("product") Product product, HttpServletRequest request){
+	public String addProductPost(@Valid @ModelAttribute("product") Product product, BindingResult bindingResult,
+								 HttpServletRequest request){
+		if(bindingResult.hasErrors()){
+			return "add-product";
+		}
 		productDao.addProduct(product);
 		MultipartFile pImage = product.getpImage();
 		String rootDirectory = request.getSession().getServletContext().getRealPath("/");
@@ -115,7 +121,11 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/admin/productInventory/editProduct", method = RequestMethod.POST)
-	public String editProduc(@ModelAttribute("product") Product product, HttpServletRequest request){
+	public String editProduct(@Valid @ModelAttribute("product") Product product, BindingResult bindingResult,
+							  HttpServletRequest request){
+		if(bindingResult.hasErrors()){
+			return "edit-product";
+		}
 		MultipartFile pImage = product.getpImage();
 		String rootDirectory = request.getSession().getServletContext().getRealPath("/");
 		path = Paths.get(rootDirectory + "/WEB-INF/resources/images/" + product.getpId() + ".png");
