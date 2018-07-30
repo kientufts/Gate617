@@ -1,7 +1,7 @@
-package com.iansky.controller;
+package com.iansky.controller.Admin;
 
-import com.iansky.dao.ProductDao;
 import com.iansky.model.Product;
+import com.iansky.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,47 +19,37 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 @Controller
-public class AdminController {
+@RequestMapping("/admin")
+public class AdminProduct {
 
 	private Path path;
 
 	@Autowired
-	private ProductDao productDao;
+	private ProductService productService;
 
-	@RequestMapping("/admin")
-	public String adminPage(){
-		return "admin";
-	}
-
-	@RequestMapping("/admin/productInventory")
-	public String productInventory(Model model){
-		List<Product> products = productDao.getAllProducts();
-		model.addAttribute("products", products);
-
-		return  "product-inventory";
-	}
-
-	@RequestMapping(value = "/admin/productInventory/addProduct", method = RequestMethod.GET)
+	@RequestMapping("/product/addProduct")
 	public String addProduct(Model model){
 		Product product = new Product();
-		product.setpCategory("Jean");
-		product.setpCondition("new");
-		product.setpStatus("active");
+		product.setpCategory("Jeans");
+		product.setpCondition("New");
+		product.setpStatus("Active");
 
 		model.addAttribute("product", product);
+
 		return "add-product";
 	}
 
-	@RequestMapping(value = "/admin/productInventory/addProduct", method = RequestMethod.POST)
+	@RequestMapping(value = "/product/addProduct", method = RequestMethod.POST)
 	public String addProductPost(@Valid @ModelAttribute("product") Product product, BindingResult bindingResult,
 								 HttpServletRequest request){
 		if(bindingResult.hasErrors()){
 			return "add-product";
 		}
-		productDao.addProduct(product);
+
+		productService.addProduct(product);
+
 		MultipartFile pImage = product.getpImage();
 		String rootDirectory = request.getSession().getServletContext().getRealPath("/");
 		path = Paths.get(rootDirectory + "/WEB-INF/resources/images/" + product.getpId() + ".png");
@@ -68,19 +58,54 @@ public class AdminController {
 			try {
 				pImage.transferTo(new File(path.toString()));
 			} catch (Exception ex){
-				throw new RuntimeException("Product image saving failed");
+				ex.printStackTrace();
+				throw new RuntimeException("Product image saving failed", ex);
 			}
 		}
 
 		return "redirect:/admin/productInventory";
 	}
 
-	@RequestMapping("/admin/productInventory/deleteProduct/{pId}")
-	public String deleteProduct(@PathVariable String pId, HttpServletRequest request) {
-		String rootDirectory = request.getSession().getServletContext().getRealPath("/");
-		path = Paths.get(rootDirectory + "/WEB-INF/resources/images/" + pId + ".png");
+	@RequestMapping("/product/editProduct/{id}")
+	public String editProduct(@PathVariable("id") int id,  Model model){
+		Product product = productService.getProductById(id);
 
-		if(Files.exists(path)){
+		model.addAttribute("product", product);
+
+		return "edit-product";
+	}
+
+	@RequestMapping(value = "/product/editProduct", method = RequestMethod.POST)
+	public String editProductPost(@Valid @ModelAttribute("product") Product product, BindingResult bindingResult,
+								 HttpServletRequest request){
+		if(bindingResult.hasErrors()){
+			return "edit-product";
+		}
+
+		MultipartFile pImage = product.getpImage();
+		String rootDirectory = request.getSession().getServletContext().getRealPath("/");
+		path = Paths.get(rootDirectory + "/WEB-INF/resources/images/" + product.getpId() + ".png");
+
+		if(pImage != null && !pImage.isEmpty()){
+			try {
+				pImage.transferTo(new File(path.toString()));
+			} catch (Exception ex){
+				ex.printStackTrace();
+				throw new RuntimeException("Product image saving failed", ex);
+			}
+		}
+
+		productService.editProduct(product);
+
+		return "redirect:/admin/productInventory";
+	}
+
+	@RequestMapping("/product/deleteProduct/{id}")
+	public String deleteProduct(@PathVariable("id") int id, Model model, HttpServletRequest request){
+		String rootDirectory = request.getSession().getServletContext().getRealPath("/");
+		path = Paths.get(rootDirectory + "/WEB-INF/resources/images/" + id + ".png");
+
+		if (Files.exists(path)) {
 			try {
 				Files.delete(path);
 			} catch (IOException ex){
@@ -88,36 +113,9 @@ public class AdminController {
 			}
 		}
 
-		productDao.deleteProduct(pId);
+		Product product = productService.getProductById(id);
+		productService.deleteProduct(product);
 
-		return "redirect:/admin/productInventory";
-	}
-
-	@RequestMapping("/admin/productInventory/editProduct/{pId}")
-	public String editProduct(@PathVariable String pId, Model model){
-		Product product = productDao.getProductById(pId);
-		model.addAttribute(product);
-		return "edit-product";
-	}
-
-	@RequestMapping(value = "/admin/productInventory/editProduct", method = RequestMethod.POST)
-	public String editProduct(@Valid @ModelAttribute("product") Product product, BindingResult bindingResult,
-							  HttpServletRequest request){
-		if(bindingResult.hasErrors()){
-			return "edit-product";
-		}
-		MultipartFile pImage = product.getpImage();
-		String rootDirectory = request.getSession().getServletContext().getRealPath("/");
-		path = Paths.get(rootDirectory + "/WEB-INF/resources/images/" + product.getpId() + ".png");
-		if(pImage != null && !pImage.isEmpty()){
-			try {
-				pImage.transferTo(new File(path.toString()));
-			} catch (Exception ex)
-			{
-				throw new RuntimeException("Product image saving fail", ex);
-			}
-		}
-		productDao.editProduct(product);
 		return "redirect:/admin/productInventory";
 	}
 }

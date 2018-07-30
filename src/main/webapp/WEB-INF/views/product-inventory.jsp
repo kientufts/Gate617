@@ -42,11 +42,11 @@
                     <td> ${product.pCategory}</td>
                     <td> ${product.pCondition}</td>
                     <td> ${product.pPrice}</td>
-                    <td><a href="<spring:url value="/productList/viewProduct/${product.pId}"/>"><span
+                    <td><a href="<spring:url value="/product/viewProduct/${product.pId}"/>"><span
                             class="glyphicon glyphicon-info-sign"/> </a>
-                        <a href="<spring:url value="/admin/productInventory/deleteProduct/${product.pId}"/>"><span
+                        <a href="<spring:url value="/admin/product/deleteProduct/${product.pId}"/>"><span
                                 class="glyphicon glyphicon-remove"/> </a>
-                        <a href="<spring:url value="/admin/productInventory/editProduct/${product.pId}"/>"><span
+                        <a href="<spring:url value="/admin/product/editProduct/${product.pId}"/>"><span
                                 class="glyphicon glyphicon-pencil"/> </a>
                     </td>
                 </tr>
@@ -56,7 +56,7 @@
 
         </table>
 
-        <a href="<spring:url value="/admin/productInventory/addProduct"/> " class="btn btn-primary">Add Product</a>
+        <a href="<spring:url value="/admin/product/addProduct"/> " class="btn btn-primary">Add Product</a>
 
     </div>
 </div>

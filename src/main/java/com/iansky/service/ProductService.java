@@ -1,10 +1,10 @@
-package com.iansky.dao;
+package com.iansky.service;
 
 import com.iansky.model.Product;
 
 import java.util.List;
 
-public interface ProductDao {
+public interface ProductService {
 
 	List<Product> getProductList();
 

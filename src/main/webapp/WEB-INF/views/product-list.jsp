@@ -3,7 +3,7 @@
 <%@ taglib prefix="spring" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
-  User: kienle
+  Users: kienle
   Date: 7/22/18
   Time: 2:56 AM
   To change this template use File | Settings | File Templates.
@@ -42,7 +42,7 @@
                         <td> ${product.pCategory}</td>
                         <td> ${product.pCondition}</td>
                         <td> ${product.pPrice}</td>
-                        <td><a href="<spring:url value="/productList/viewProduct/${product.pId}"/>"><span
+                        <td><a href="<spring:url value="/product/viewProduct/${product.pId}"/>"><span
                                 class="glyphicon glyphicon-info-sign"/> </a></td>
                     </tr>
                 </c:forEach>

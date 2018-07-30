@@ -1,39 +1,29 @@
 package com.iansky.controller;
 
-import com.iansky.dao.ProductDao;
-import com.iansky.model.Product;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HomeController {
-
-	@Autowired
-	private ProductDao productDao;
 
 	@RequestMapping("/")
 	public String home(){
 		return "home";
 	}
 
-	@RequestMapping("/productList")
-	public String getProducts(Model model){
-		List<Product> productList = productDao.getAllProducts();
-		model.addAttribute("products", productList);
+	@RequestMapping("/login")
+	public String login(@RequestParam(value = "error", required = false) String error, @RequestParam(value =
+			"logout", required = false) String logout, Model model){
+		if(error != null){
+			model.addAttribute("error", "Invalid username and password");
+		}
 
-		return "product-list";
+		if(logout != null){
+			model.addAttribute("msg", "You have been logged out successfully");
+		}
+
+		return "login";
 	}
-
-	@RequestMapping("/productList/viewProduct/{pId}")
-	public String viewProduct(@PathVariable String pId, Model model) {
-		Product product = productDao.getProductById(pId);
-		model.addAttribute(product);
-		return "view-product";
-	}
-
 }
