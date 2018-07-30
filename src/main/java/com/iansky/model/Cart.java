@@ -1,38 +1,54 @@
 package com.iansky.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class Cart {
+@Entity
+public class Cart implements Serializable {
 
-	private String cartId;
-	private Map<String, CartItem> cartItems;
+	private static final long serialVersionUID = -8854044256351666932L;
+
+	@Id
+	@GeneratedValue
+	private int cardId;
+
+	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private List<CartItem> cartItems;
+
+	@OneToOne
+	@JoinColumn(name = "customerId")
+	@JsonIgnore
+	private Customer customer;
+
 	private double grandTotal;
 
-	private Cart(){
-		cartItems = new HashMap<>();
-		grandTotal = 0;
+	public int getCardId() {
+		return cardId;
 	}
 
-	public Cart(String cartId){
-		this();
-		this.cartId = cartId;
+	public void setCardId(int cardId) {
+		this.cardId = cardId;
 	}
 
-	public String getCartId() {
-		return cartId;
-	}
-
-	public void setCartId(String cartId) {
-		this.cartId = cartId;
-	}
-
-	public Map<String, CartItem> getCartItems() {
+	public List<CartItem> getCartItems() {
 		return cartItems;
 	}
 
-	public void setCartItems(Map<String, CartItem> cartItems) {
+	public void setCartItems(List<CartItem> cartItems) {
 		this.cartItems = cartItems;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
 	public double getGrandTotal() {
@@ -41,35 +57,5 @@ public class Cart {
 
 	public void setGrandTotal(double grandTotal) {
 		this.grandTotal = grandTotal;
-	}
-
-	public void addCartItem(CartItem item){
-		String pId = item.getProduct().getpId();
-		if(cartItems.containsKey(pId)){
-			// if item is already added to the cart, just update the quantity
-			CartItem existingCartItem = cartItems.get(pId);
-			existingCartItem.setQuantity(existingCartItem.getQuantity() + item.getQuantity());
-			cartItems.put(pId, existingCartItem);
-		} else {
-			// if item is not in the cart, add it
-			cartItems.put(pId, item);
-		}
-
-		updateGrandTotal();
-	}
-
-	public void removeCartItem(CartItem item){
-		// remove item in cart by id
-		String pId = item.getProduct().getpId();
-		cartItems.remove(pId);
-
-		updateGrandTotal();
-	}
-
-	public void updateGrandTotal(){
-		grandTotal = 0;
-		for(CartItem item: cartItems.values()){
-			grandTotal += item.getTotalPrice();
-		}
 	}
 }
