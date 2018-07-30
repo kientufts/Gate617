@@ -1,4 +1,5 @@
 <%@ taglib prefix="spring" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: kienle
@@ -27,7 +28,9 @@
         <section class="container" ng-app="cartApp">
             <div ng-controller = "cartCtrl" ng-init = "initCartId('${cartId}')">
             <div>
-                <a class="btn btn-danger pull-left"><span class="glyphicon glyphicon-remove-sign"></span> Clear Cart</a>
+                <a class="btn btn-danger pull-left" ng-click="clearCart()"><span
+                        class="glyphicon glyphicon-remove-sign"></span>
+                    Clear Cart</a>
             </div>
 
             <table class="table table-hover">
@@ -52,16 +55,16 @@
                     <th></th>
                     <th></th>
                     <th>Grand Total</th>
-                    <th>grandTotal</th>
+                    <th>{{cart.grandTotal}}</th>
                     <th></th>
                 </tr>
             </table>
 
-            <a href="<spring:url value="/productList"/> ">Continue Shopping</a>
+            <a href="<spring:url value="/productList"/>" class="btn btn-default">Continue Shopping</a>
             </div>
         </section>
     </div>
 </div>
-
+<script src="<c:url value="/resources/js/controller.js"/>"></script>
 <%@include file="common/footer.jsp"%>
 </html>

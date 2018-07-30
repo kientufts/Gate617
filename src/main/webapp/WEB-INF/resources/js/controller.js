@@ -8,7 +8,7 @@ cartApp.controller("cartCtrl", function ($scope, $http) {
     };
 
     $scope.clearCart = function () {
-        $http.delete('/Gate617/rest/cart' + $scope.cartId).success($scope.refreshCart($scope.cartId));
+        $http.delete('/Gate617/rest/cart/' + $scope.cartId).success($scope.refreshCart($scope.cartId));
     };
 
     $scope.initCartId = function (cartId) {
@@ -17,7 +17,7 @@ cartApp.controller("cartCtrl", function ($scope, $http) {
     };
 
     $scope.addToCart = function (pId) {
-        $http.put('/Gate617/rest/cart/add' + pId).success(function (data) {
+        $http.put('/Gate617/rest/cart/add/' + pId).success(function (data) {
             $scope.refreshCart($http.get('/Gate617/rest/cart/get/cartId'));
             alert("Product successfully added to the cart!")
         });
